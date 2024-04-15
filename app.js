@@ -14,20 +14,20 @@ const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
 const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 
 function formatToJson(input) {
-    // Match key names and ensure they are properly double-quoted. This regex assumes that
-    // the key names do not contain colons or curly braces.
-    let formatted = input.replace(/(\b\w+\b)(?=:)/g, '"$1"');
+    // Ensure keys are correctly double-quoted.
+    input = input.replace(/([^\s:{}]+)(?=\s*:[^:])/g, '"$1"');
 
-    // Replace single quotes around string literals with double quotes,
-    // and escape internal double quotes within string literals.
-    formatted = formatted.replace(/:\s*'([^']*)'/g, function(match, p1) {
-        // Escape all double quotes inside the string
-        const escapedValue = p1.replace(/"/g, '\\"');
-        return `: "${escapedValue}"`;
+    // Correctly quote and escape all string values.
+    return input.replace(/:\s*'([^']*)'|:\s*([^,\]}]*)/g, function (match, p1, p2) {
+        if (p1) {  // Matched first pattern: single-quoted string.
+            return ': "' + p1.replace(/"/g, '\\"') + '"';
+        } else if (p2) {  // Matched second pattern: unquoted value.
+            return ': "' + p2.replace(/"/g, '\\"') + '"';
+        }
+        return match;  // Should not reach here.
     });
-
-    return formatted;
 }
+
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
