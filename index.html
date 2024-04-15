@@ -130,9 +130,6 @@
     <script>
 
         const socket = io();
-        document.getElementById('restartButton').addEventListener('click', function () {
-            socket.emit('dry-run-restart', 'Dry run: Restart command would be executed here.');
-        });
 
 
         function bytesToSize(bytes) {
@@ -152,6 +149,13 @@
                 bar.className = 'bar-fill';
             }
         }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('restartButton').addEventListener('click', function () {
+                socket.emit('dry-run-restart', 'Dry run: Restart command would be executed here.');
+            });
+        });
 
         socket.on('log-update', function (msg) {
             const logElement = document.getElementById('logs');
@@ -236,7 +240,6 @@
         </div>
 
     </div>
-    </div>
 
 
     <div class="container">
@@ -252,7 +255,6 @@
     <div class="info-content">
         <h2>System Logs</h2>
         <div id="logs" class="logs"></div>
-    </div>
     </div>
 
 </body>
