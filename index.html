@@ -21,6 +21,12 @@
             color: #3c3c3c;
         }
 
+        #links {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
         .container,
         .logs,
         #tweet-info,
@@ -103,7 +109,7 @@
             }
 
             .triple-content {
-                flex: 1 1 31%;
+                flex: 1 1 25%;
                 /* Adjust for three columns */
                 margin-right: 10px;
             }
@@ -189,13 +195,9 @@
 <body>
     <h1>Translatemom Bot</h1>
     <div class="container">
-        <h2>System Info</h2>
-        <div id="system-info" class="logs"></div>
-    </div>
-    <div class="container">
         <div class="triple-content">
             <h2>Are we rate limited?</h2>
-            <div id="rate-limit">coming soon
+            <div id="rate-limit" class="logs">coming soon
                 todo:
                 when did we start getting rate limited
                 when will it get lifted
@@ -203,7 +205,7 @@
         </div>
         <div class="triple-content">
             <h2>Useful Links</h2>
-            <div id="links">
+            <div id="links" class="logs">
                 <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
                 <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
                     target="_blank">RabbitMQ Queue</a>
@@ -213,7 +215,11 @@
         </div>
         <div class="triple-content">
             <h2>Last Published Tweet</h2>
-            <div id="tweet-info"></div>
+            <div id="tweet-info" class="logs"></div>
+        </div>
+        <div class="triple-content">
+            <h2>System Info</h2>
+            <div id="system-info" class="logs"></div>
         </div>
     </div>
 
