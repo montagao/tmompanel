@@ -13,20 +13,14 @@ const io = socketIo(server);
 const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
 const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 
-function formatToJson(input) {
-    // Ensure keys are correctly double-quoted.
-    input = input.replace(/([^\s:{}]+)(?=\s*:[^:])/g, '"$1"');
-
-    // Correctly quote and escape all string values.
-    return input.replace(/:\s*'([^']*)'|:\s*([^,\]}]*)/g, function(match, p1, p2) {
-        if (p1) {  // Matched first pattern: single-quoted string.
-            return ': "' + p1.replace(/"/g, '\\"') + '"';
-        } else if (p2) {  // Matched second pattern: unquoted value.
-            return ': "' + p2.replace(/"/g, '\\"') + '"';
-        }
-        return match;  // Should not reach here.
-    });
+function snowflake2millis(snowflakeId) {
+    /**
+     * Get millisecond timestamp from snowflake ID.
+     */
+    return (snowflakeId / Math.pow(2, 22)) + 1288834974657;
 }
+
+
 
 
 app.get('/', (req, res) => {
@@ -62,7 +56,8 @@ io.on('connection', (socket) => {
                 const match = data.match(jsonPattern);
                 if (match) {
                     const id = match[1];  // Extract the ID directly from the regex match
-                    const elapsedTime = Date.now() - parseInt(id)/1000000;
+                    const tweetTime = snowflake2millis(parseInt(id);
+                    const elapsedTime = Date.now() - tweetTime;
                     socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
                     console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet with ID: ${id}`);
                 } else {
