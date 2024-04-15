@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
-const indexOutLogPath = path.join(os.homedir(), ".pm2/logs/index-out.log");
+const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
