@@ -80,10 +80,11 @@
             const logElement = document.getElementById('logs');
             logElement.textContent = msg;
             // Animate refresh indication
+            const loadingPretext = "refreshing (every 2s)" 
             const loadingText = document.getElementById('loading');
-            loadingText.textContent = "refreshing (every 2s)" + loadingText.textContent + '.';
-            if (loadingText.textContent.length > 3) {
-                loadingText.textContent = '.';
+            loadingText.textContent =  loadingText.textContent + '.';
+            if (loadingText.textContent.length > 3 + loadingPretext.length ) {
+                loadingText.textContent = loadingPretext + '.';
             }
         });
 
