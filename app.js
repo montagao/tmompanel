@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
                     let formattedTime = `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 
                     // Emit and log the formatted time
-                    socket.emit('tweet-info-update', `Elapsed Time: ${formattedTime}`);
+                    socket.emit('tweet-info-update', `Elapsed Time: ${formattedTime} at https://x.com/i/status/${id}`);
                     console.log(`Tweet info update sent: ${formattedTime} since tweet with ID: ${id}`);
 
                 } else {
