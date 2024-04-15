@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
                 console.log('Reading index-out log file');
 
                 // Regex to find the JSON-like structure that includes the id
-                const jsonPattern = /data:[\s\S]*?{[\s\S]*?"id":\s*'(\d+)'[\s\S]*?}/;
+                const jsonPattern = /data:[\s\S]*?{[\s\S]*?id:\s*'(\d+)'[\s\S]*?}/;
 
                 const match = data.match(jsonPattern);
                 if (match) {
