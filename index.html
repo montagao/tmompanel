@@ -19,7 +19,7 @@
             color: #3c3c3c;
         }
 
-        #system-info, #logs, #links, #index-logs {
+        #system-info, #logs, #links, #index-logs #tweet-info {
             display: flex;
             flex-direction: column;
             background-color: #fff;
@@ -94,6 +94,11 @@
             indexLogElement.textContent = msg;
         });
 
+        socket.on('tweet-info-update', function (msg) {
+            const indexLogElement = document.getElementById('tweet-info');
+            indexLogElement.textContent = msg;
+        });
+
         socket.on('system-info', function (info) {
             const systemInfoElement = document.getElementById('system-info');
             systemInfoElement.innerHTML = `<div class="progress-bar"><div class="bar"><div id="mem-bar" class="bar-fill" style="width: ${Math.round((info.totalmem - info.freemem) / info.totalmem * 100)}%"></div></div>Memory Usage</div>` +
@@ -123,6 +128,8 @@ message) {
         <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item" target="_blank">RabbitMQ Queue</a>
         <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
     </div>
+    <h2>Last Published Tweet</h2>
+    <div id="tweet-info"></div>  
     <h2>Index Logs</h2>
     <div id="index-logs"></div>
     <h2>System Info</h2>

@@ -40,8 +40,10 @@ io.on('connection', (socket) => {
                 if (match) {
                     const jsonData = JSON.parse(match[1]);
                     const elapsedTime = Date.now() - parseInt(jsonData.data.id);
-                    socket.emit('tweet-info', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
+                    socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
                 }
+                const lines = data.split('\n').slice(-49); // Get the last 50 lines
+                socket.emit('index-logs', lines.join('\n'));
             }
         });
     };
