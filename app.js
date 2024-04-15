@@ -15,6 +15,7 @@ const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
+    console.log('Served index.html');
 });
 
 io.on('connection', (socket) => {
@@ -23,27 +24,37 @@ io.on('connection', (socket) => {
     const sendLogs = () => {
         fs.readFile(translatemomLogPath, 'utf8', (err, data) => {
             if (err) {
-                console.error(`Error reading log file: ${err}`);
-                socket.emit('log-error', 'Failed to read log file');
+                console.error(`Error reading translatemom log file: ${err}`);
+                socket.emit('log-error', 'Failed to read translatemom log file');
             } else {
                 const lines = data.split('\n').slice(-50); // Get the last 50 lines
                 socket.emit('log-update', lines.join('\n'));
+                console.log('Translatemom logs sent to client');
             }
         });
 
         fs.readFile(indexOutLogPath, 'utf8', (err, data) => {
             if (err) {
                 console.error(`Error reading index-out log file: ${err}`);
+                socket.emit('log-error', 'Failed to read index-out log file');
             } else {
+                console.log('Reading index-out log file');
                 const jsonPattern = /data: ({.*})/;
                 const match = data.match(jsonPattern);
                 if (match) {
-                    const jsonData = JSON.parse(match[1]);
-                    const elapsedTime = Date.now() - parseInt(jsonData.data.id);
-                    socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
+                    try {
+                        const jsonData = JSON.parse(match[1]);
+                        const elapsedTime = Date.now() - parseInt(jsonData.data.id);
+                        socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
+                        console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet`);
+                    } catch (parseError) {
+                        console.error(`Error parsing JSON from log: ${parseError}`);
+                        socket.emit('log-error', 'JSON parse error in index-out log');
+                    }
                 }
-                const lines = data.split('\n').slice(-49); // Get the last 50 lines
+                const lines = data.split('\n').slice(-50); // Get the last 50 lines
                 socket.emit('index-logs', lines.join('\n'));
+                console.log('Index logs sent to client');
             }
         });
     };
@@ -66,6 +77,7 @@ io.on('connection', (socket) => {
                 cpus: os.cpus().length
             };
             socket.emit('system-info', systemInfo);
+            console.log('System info sent to client');
         } catch (err) {
             console.error('Failed to get disk usage:', err);
             socket.emit('system-error', 'Failed to get system info');
@@ -80,6 +92,6 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3000, () => {
-    console.log('Listening on *:3000');
+    console.log('Server listening on *:3000');
 });
 
