@@ -53,9 +53,11 @@ io.on('connection', (socket) => {
                 // Regex to find the JSON-like structure that includes the id
                 const jsonPattern = /data:[\s\S]*?{[\s\S]*?edit_history_tweet_ids:\s*\[\s*'(\d+)'\s*\][\s\S]*?}/;
 
-                const match = data.match(jsonPattern);
+                let matches = [...data.matchAll(jsonPattern)];
+                let match = matches[matches.length - 1];
+
                 if (match) {
-                    const id = match[match.length-1];  // Extract the ID directly from the regex match
+                    const id = match[match.length - 1];  // Extract the ID directly from the regex match
                     console.log(match)
                     const tweetTime = snowflake2millis(parseInt(id));
                     const elapsedTime = Date.now() - tweetTime;
