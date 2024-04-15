@@ -21,6 +21,19 @@
             color: #3c3c3c;
         }
 
+        .container,
+        .logs,
+        #tweet-info,
+        #system-info,
+        #logs {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -30,18 +43,10 @@
         .log-content,
         .info-content {
             flex: 1 1 100%;
-            /* Default to full width for mobile */
+            /* default to full width for mobile */
         }
 
-        .logs,
-        #system-info,
-        #logs {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+        .logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
@@ -109,7 +114,6 @@
             }
         }
     </style>
-
     <script>
 
         const socket = io();
@@ -208,17 +212,6 @@
             <div id="tweet-info"></div>
         </div>
     </div>
-
-    <div class="container">
-        <div class="log-content">
-            <h2>Index Logs</h2>
-            <div id="index-logs" class="logs"></div>
-        </div>
-        <div class="log-content">
-            <h2>Index Error Logs</h2>
-            <div id="index-error" class="logs"></div>
-        </div>
-    </div>
     <div class="container">
         <div class="info-content">
             <h2>System Info</h2>
@@ -231,6 +224,16 @@
     </div>
 
 
+    <div class="container">
+        <div class="log-content">
+            <h2>Index Logs</h2>
+            <div id="index-logs" class="logs"></div>
+        </div>
+        <div class="log-content">
+            <h2>Index Error Logs</h2>
+            <div id="index-error" class="logs"></div>
+        </div>
+    </div>
 </body>
 
 </html>
