@@ -63,6 +63,10 @@
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
+            overflow-x: auto;
+            /* Add horizontal scrolling if content overflows */
+            word-wrap: break-word;
+            /* Ensures words break to prevent overflow */
         }
 
         #tweet-info {
@@ -216,6 +220,9 @@
                 todo:
                 when did we start getting rate limited
                 when will it get lifted
+                i.e. when is 
+                X-Rate-Limit-Remaining: 0
+                seen
             </div>
         </div>
         <div class="triple-content">
