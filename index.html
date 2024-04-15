@@ -15,11 +15,16 @@
             background-color: #f8f8f8;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: #3c3c3c;
         }
 
-        #system-info, #logs, #links, #index-logs, #tweet-info {
+        #system-info,
+        #logs,
+        #links,
+        #index-logs,
+        #tweet-info {
             display: flex;
             flex-direction: column;
             background-color: #fff;
@@ -30,18 +35,22 @@
             margin-top: 20px;
         }
 
-        #logs, #index-logs {
+        #logs,
+        #index-logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
         }
+
         #tweet-info {
             white-space: pre-wrap;
             height: 100px;
             overflow-y: auto;
         }
 
-        .info-item, .progress-bar, .link-item {
+        .info-item,
+        .progress-bar,
+        .link-item {
             margin-bottom: 10px;
         }
 
@@ -101,8 +110,16 @@
 
         socket.on('tweet-info-update', function (msg) {
             const indexLogElement = document.getElementById('tweet-info');
-            indexLogElement.textContent = msg;
+            indexLogElement.innerHTML = linkify(msg);
         });
+
+        function linkify(inputText) {
+            var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+            return inputText.replace(urlRegex, function (url) {
+                return '<a href="' + url + '" target="_blank">' + url + '</a>';
+            });
+        }
+
 
         socket.on('system-info', function (info) {
             const systemInfoElement = document.getElementById('system-info');
@@ -119,7 +136,7 @@
 
         socket.on('system-error', function (
 
-message) {
+            message) {
             alert(message);
         });
     </script>
@@ -130,17 +147,18 @@ message) {
     <h2>Are we rate limited?</h2>
     <div id="rate-limit">coming soon
         todo:
-            when did we start getting rate limited
-            when will it get lifted
+        when did we start getting rate limited
+        when will it get lifted
     </div>
     <h2>Useful Links</h2>
     <div id="links">
         <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
-        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item" target="_blank">RabbitMQ Queue</a>
+        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
+            target="_blank">RabbitMQ Queue</a>
         <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
     </div>
     <h2>Last Published Tweet</h2>
-    <div id="tweet-info"></div>  
+    <div id="tweet-info"></div>
     <h2>Index Logs</h2>
     <div id="index-logs"></div>
     <h2>System Info</h2>
