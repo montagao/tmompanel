@@ -14,10 +14,17 @@
             color: #333;
             background-color: #f8f8f8;
         }
-        h1, h2 {
+
+        h1,
+        h2 {
             color: #3c3c3c;
         }
-        #system-info, #logs, #links {
+
+        #system-info,
+        #logs,
+        #links {
+            display: flex;
+            flex-direction: column;
             background-color: #fff;
             border: 1px solid #ccc;
             padding: 20px;
@@ -25,29 +32,38 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
+
         #logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
         }
-        .info-item, .progress-bar, .link-item {
+
+        .info-item,
+        .progress-bar,
+        .link-item {
             margin-bottom: 10px;
         }
+
         .bar {
             width: 100%;
             background-color: #eee;
         }
+
         .bar-fill {
             height: 20px;
             background-color: #3c3c3c;
         }
+
         .high-usage {
             background-color: red;
         }
+
         a {
             color: #3367d6;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
@@ -102,18 +118,20 @@
 <body>
     <h1>Trans
 
-latemom Bot</h1>
+        latemom Bot</h1>
+    <h2>Useful Links</h2>
+    <div id="links">
+        <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
+        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
+            target="_blank">RabbitMQ Queue</a>
+        <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
+    </div>
+
     <h2>System Info</h2>
     <div id="system-info"></div>
     <h2>System Logs</h2>
     <div id="logs"></div>
     <div id="loading">.</div>
-    <h2>External Links</h2>
-    <div id="links">
-        <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
-        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item" target="_blank">RabbitMQ Queue</a>
-        <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
-    </div>
 </body>
 
 </html>
