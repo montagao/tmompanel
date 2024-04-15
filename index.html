@@ -153,7 +153,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('restartButton').addEventListener('click', function () {
-                socket.emit('dry-run-restart', 'Dry run: Restart command would be executed here.');
+                socket.emit('restart-server', 'Dry run: Restart command would be executed here.');
             });
         });
 

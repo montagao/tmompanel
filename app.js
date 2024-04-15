@@ -48,16 +48,25 @@ io.on('connection', (socket) => {
                 socket.emit('action-status', 'Error connecting to PM2');
                 return;
             }
-            pm2.restart('my-app', function(err, apps) {
-                pm2.disconnect();   // Disconnects from PM2
+            pm2.restart('index', function(err, apps) {
                 if (err) {
                     console.error(err);
                     socket.emit('action-status', 'Error restarting the server');
                     return;
                 }
-                console.log('Server restarted successfully');
+                console.log('Server (index worker) restarted successfully');
                 socket.emit('action-status', 'Server restarted successfully');
             });
+            pm2.restart('my-app', function(err, apps) {
+                if (err) {
+                    console.error(err);
+                    socket.emit('action-status', 'Error restarting the server');
+                    return;
+                }
+                console.log('Server (backend tmom) restarted successfully');
+                socket.emit('action-status', 'Server restarted successfully');
+            });
+
         });
     });
 
