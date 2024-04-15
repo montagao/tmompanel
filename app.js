@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
                 socket.emit('index-error-error', 'Failed to read translatemom log file');
             } else {
                 const lines = data.split('\n').slice(-50); // Get the last 50 lines
-                socket.emit('index-error', lines.join('\n'));
+                socket.emit('index-error-update', lines.join('\n'));
                 console.log('index (worker) error logs sent to client');
             }
         });

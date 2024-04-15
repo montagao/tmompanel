@@ -24,7 +24,8 @@
         #logs,
         #links,
         #index-logs,
-        #tweet-info, .logs {
+        #tweet-info,
+        .logs {
             display: flex;
             flex-direction: column;
             background-color: #fff;
@@ -36,7 +37,8 @@
         }
 
         #logs,
-        #index-logs, .logs {
+        #index-logs,
+        .logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
@@ -164,9 +166,10 @@
     </div>
     <h2>Last Published Tweet</h2>
     <div id="tweet-info"></div>
-    <h2>Index Logs</h2>
     <div id="index">
+        <h2>Index Logs</h2>
         <div id="index-logs"></div>
+        <h2>Index Error Logs</h2>
         <div id="index-error"></div>
     </div>
     <h2>System Info</h2>
