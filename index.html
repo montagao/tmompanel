@@ -89,13 +89,13 @@
 
         socket.on('system-info', function (info) {
             const systemInfoElement = document.getElementById('system-info');
-            `<div class="progress-bar"><div class="bar"><div id="mem-bar" class="bar-fill" style="width: ${Math.round((info.totalmem - info.freemem) / info.totalmem * 100)}%"></div></div>Memory Usage</div>` +
-                `<div class="progress-bar"><div class="bar"><div id="disk-bar" class="bar-fill" style="width: ${Math.round((info.totalSpace - info.freeSpace) / info.totalSpace * 100)}%"></div></div>Disk Usage</div><br/>` +
-                systemInfoElement.innerHTML = `<div class="info-item">Free Memory: ${bytesToSize(info.freemem)}</div>` +
-                    `<div class="info-item">Total Memory: ${bytesToSize(info.totalmem)}</div>` +
-                    `<div class="info-item">Disk Free Space: ${bytesToSize(info.freeSpace)}</div>` +
-                    `<div class="info-item">Disk Total Space: ${bytesToSize(info.totalSpace)}</div>` +
-                    `<div class="info-item">CPU Cores: ${info.cpus}<br>`;
+            systemInfoElement.innerHTML = `<div class="progress-bar"><div class="bar"><div id="mem-bar" class="bar-fill" style="width: ${Math.round((info.totalmem - info.freemem) / info.totalmem * 100)}%"></div></div>Memory Usage</div>` +
+                `<div class="progress-bar"><div class="bar"><div id="disk-bar" class="bar-fill" style="width: ${Math.round((info.totalSpace - info.freeSpace) / info.totalSpace * 100)}%"></div></div>Disk Usage</div><br/><br/>` +
+                `<div class="info-item">Free Memory: ${bytesToSize(info.freemem)}</div>` +
+                `<div class="info-item">Total Memory: ${bytesToSize(info.totalmem)}</div>` +
+                `<div class="info-item">Disk Free Space: ${bytesToSize(info.freeSpace)}</div>` +
+                `<div class="info-item">Disk Total Space: ${bytesToSize(info.totalSpace)}</div>` +
+                `<div class="info-item">CPU Cores: ${info.cpus}<br>`;
             updateProgress('mem-bar', info.totalmem - info.freemem, info.totalmem);
             updateProgress('disk-bar', info.totalSpace - info.freeSpace, info.totalSpace);
         });
