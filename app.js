@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
                     }
                 }
                 const lines = data.split('\n').slice(-50); // Get the last 50 lines
-                socket.emit('index-logs', lines.join('\n'));
+                socket.emit('index-log-update', lines.join('\n'));
                 console.log('Index logs sent to client');
             }
         });
