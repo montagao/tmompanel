@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta viewport="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
@@ -14,17 +13,10 @@
             color: #333;
             background-color: #f8f8f8;
         }
-
-        h1,
-        h2 {
+        h1, h2 {
             color: #3c3c3c;
         }
-
-        #system-info,
-        #logs,
-        #links {
-            display: flex;
-            flex-direction: column;
+        #system-info, #logs, #index-logs, #links {
             background-color: #fff;
             border: 1px solid #ccc;
             padding: 20px;
@@ -32,44 +24,58 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
-
-        #logs {
+        #logs, #index-logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
         }
-
-        .info-item,
-        .progress-bar,
-        .link-item {
+        .info-item, .progress-bar, .link-item {
             margin-bottom: 10px;
         }
-
         .bar {
             width: 100%;
             background-color: #eee;
         }
-
         .bar-fill {
             height: 20px;
             background-color: #3c3c3c;
         }
-
         .high-usage {
             background-color: red;
         }
-
         a {
             color: #3367d6;
             text-decoration: none;
         }
-
         a:hover {
             text-decoration: underline;
         }
     </style>
     <script>
         const socket = io();
+
+        socket.on('log-update', function(msg) {
+            document.getElementById('logs').textContent = msg;
+        });
+
+        socket.on('tweet-info', function(msg) {
+            document.getElementById('tweet-info').textContent = msg;
+        });
+
+        socket.on('system-info', function(info) {
+            const systemInfoElement = document.getElementById('system-info');
+            systemInfoElement.innerHTML = `<div class="info-item">Free Memory: ${bytesToSize(info.freemem)}</div>` +
+                `<div class="info-item">Total Memory: ${bytesToSize(info.totalmem)}</div>` +
+                `<div class="info-item">Disk Free Space: ${bytesToSize(info.freeSpace)}</div>` +
+                `<div class="info-item">Disk Total Space: ${bytesToSize(info.totalSpace)}</div>` +
+                `<div class="info-item">CPU Cores: ${info.cpus}`;
+            updateProgress('mem-bar', info.totalmem - info.freemem, info.totalmem);
+            updateProgress('disk-bar', info.totalSpace - info.freeSpace, info.totalSpace);
+        });
+
+        socket.on('system-error', function(message) {
+            alert(message);
+        });
 
         function bytesToSize(bytes) {
             const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -88,50 +94,24 @@
                 bar.className = 'bar-fill';
             }
         }
-
-        socket.on('log-update', function (msg) {
-            const logElement = document.getElementById('logs');
-            logElement.textContent = msg;
-            const loadingText = document.getElementById('loading');
-            loadingText.textContent = 'Refreshing...';
-        });
-
-        socket.on('system-info', function (info) {
-            const systemInfoElement = document.getElementById('system-info');
-            systemInfoElement.innerHTML = `<div class="progress-bar"><div class="bar"><div id="mem-bar" class="bar-fill" style="width: ${Math.round((info.totalmem - info.freemem) / info.totalmem * 100)}%"></div></div>Memory Usage</div>` +
-                `<div class="progress-bar"><div class="bar"><div id="disk-bar" class="bar-fill" style="width: ${Math.round((info.totalSpace - info.freeSpace) / info.totalSpace * 100)}%"></div></div>Disk Usage</div><br/><br/>` +
-                `<div class="info-item">Free Memory: ${bytesToSize(info.freemem)}</div>` +
-                `<div class="info-item">Total Memory: ${bytesToSize(info.totalmem)}</div>` +
-                `<div class="info-item">Disk Free Space: ${bytesToSize(info.freeSpace)}</div>` +
-                `<div class="info-item">Disk Total Space: ${bytesToSize(info.totalSpace)}</div>` +
-                `<div class="info-item">CPU Cores: ${info.cpus}`;
-            updateProgress('mem-bar', info.totalmem - info.freemem, info.totalmem);
-            updateProgress('disk-bar', info.totalSpace - info.freeSpace, info.totalSpace);
-        });
-
-        socket.on('system-error', function (message) {
-            alert(message);
-        });
     </script>
 </head>
-
 <body>
-    <h1>Trans
-
-        latemom Bot</h1>
+    <h1>Translatemom Bot</h1>
     <h2>Useful Links</h2>
     <div id="links">
         <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
-        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
-            target="_blank">RabbitMQ Queue</a>
+        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item" target="_blank">RabbitMQ Queue</a>
         <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
     </div>
-
+    <h2>Tweet Info</h2>
+    <div id="tweet-info"></div>
+    <h2>Bot Logs</h2>
+    <div id="index-logs"></div>
     <h2>System Info</h2>
     <div id="system-info"></div>
-    <h2>System Logs</h2>
+    <h2>System Backend Logs</h2>
     <div id="logs"></div>
-    <div id="loading">.</div>
 </body>
-
 </html>
+:wq
