@@ -13,6 +13,22 @@ const io = socketIo(server);
 const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
 const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 
+function formatToJson(input) {
+    // Match key names and ensure they are properly double-quoted. This regex assumes that
+    // the key names do not contain colons or curly braces.
+    let formatted = input.replace(/(\b\w+\b)(?=:)/g, '"$1"');
+
+    // Replace single quotes around string literals with double quotes,
+    // and escape internal double quotes within string literals.
+    formatted = formatted.replace(/:\s*'([^']*)'/g, function(match, p1) {
+        // Escape all double quotes inside the string
+        const escapedValue = p1.replace(/"/g, '\\"');
+        return `: "${escapedValue}"`;
+    });
+
+    return formatted;
+}
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
     console.log('Served index.html');
@@ -45,11 +61,7 @@ io.on('connection', (socket) => {
                 if (match) {
                     try {
                         console.log(match[1]);
-                        const validJson = match[1].replace(/(\w+)(?=:)/g, '"$1"')  // Quote keys
-                            .replace(/:\s*'([^']*)'/g, ': "$1"')  // Replace single-quoted values with double-quoted
-                            .replace(/:\s*"([^"]*)"/g, (match, p1) => {
-                                return ': "' + p1.replace(/"/g, '\\"') + '"';  // Escape double quotes inside string values
-                            })
+                        const validJson = formatToJson(match[1])
                         console.log("validJson", validJson);
                         const jsonData = JSON.parse(validJson);
                         console.log("jsonData", jsonData);
@@ -99,6 +111,8 @@ io.on('connection', (socket) => {
         clearInterval(systemInfoInterval);
     });
 });
+
+
 
 server.listen(3000, () => {
     console.log('Server listening on *:3000');
