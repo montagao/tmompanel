@@ -18,7 +18,7 @@ function formatToJson(input) {
     input = input.replace(/([^\s:{}]+)(?=\s*:[^:])/g, '"$1"');
 
     // Correctly quote and escape all string values.
-    return input.replace(/:\s*'([^']*)'|:\s*([^,\]}]*)/g, function (match, p1, p2) {
+    return input.replace(/:\s*'([^']*)'|:\s*([^,\]}]*)/g, function(match, p1, p2) {
         if (p1) {  // Matched first pattern: single-quoted string.
             return ': "' + p1.replace(/"/g, '\\"') + '"';
         } else if (p2) {  // Matched second pattern: unquoted value.
@@ -55,23 +55,18 @@ io.on('connection', (socket) => {
                 socket.emit('log-error', 'Failed to read index-out log file');
             } else {
                 console.log('Reading index-out log file');
-                const jsonPattern = /data:[\s\S]*?({[\s\S]*?})/;
+
+                // Regex to find the JSON-like structure that includes the id
+                const jsonPattern = /data:[\s\S]*?{[\s\S]*?"id":\s*'(\d+)'[\s\S]*?}/;
 
                 const match = data.match(jsonPattern);
                 if (match) {
-                    try {
-                        console.log(match[1]);
-                        const validJson = formatToJson(match[1])
-                        console.log("validJson", validJson);
-                        const jsonData = JSON.parse(validJson);
-                        console.log("jsonData", jsonData);
-                        const elapsedTime = Date.now() - parseInt(jsonData.data.id);
-                        socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
-                        console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet`);
-                    } catch (parseError) {
-                        console.error(`Error parsing JSON from log: ${parseError}`);
-                        socket.emit('log-error', 'JSON parse error in index-out log');
-                    }
+                    const id = match[1];  // Extract the ID directly from the regex match
+                    const elapsedTime = Date.now() - parseInt(id);
+                    socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
+                    console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet with ID: ${id}`);
+                } else {
+                    console.log('No valid JSON match found or ID is missing');
                 }
                 const lines = data.split('\n').slice(-50); // Get the last 50 lines
                 socket.emit('index-log-update', lines.join('\n'));
