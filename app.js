@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
                 const match = data.match(jsonPattern);
                 if (match) {
                     const id = match[1];  // Extract the ID directly from the regex match
-                    const tweetTime = snowflake2millis(parseInt(id);
+                    const tweetTime = snowflake2millis(parseInt(id));
                     const elapsedTime = Date.now() - tweetTime;
                     socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
                     console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet with ID: ${id}`);
