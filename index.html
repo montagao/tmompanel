@@ -39,12 +39,20 @@
         #index {
             display: flex;
             flex-direction: row;
+            justify-content: space-between;
+            /* Ensures that the children take up equal space and are spaced out evenly */
         }
 
         .log-content {
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            /* Makes each child of #index take equal width */
+            margin-right: 10px;
+            /* Adds spacing between columns */
+        }
+
+        .log-content:last-child {
+            margin-right: 0;
+            /* Removes margin from the last column to avoid extra spacing on the right */
         }
 
         #logs,
