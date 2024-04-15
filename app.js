@@ -39,7 +39,8 @@ io.on('connection', (socket) => {
                 socket.emit('log-error', 'Failed to read index-out log file');
             } else {
                 console.log('Reading index-out log file');
-                const jsonPattern = /data: ({.*})/;
+                const jsonPattern = /data: ({[\s\S]*?})/;
+
                 const match = data.match(jsonPattern);
                 if (match) {
                     try {
