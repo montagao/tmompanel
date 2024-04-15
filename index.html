@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,11 +14,16 @@
             background-color: #f8f8f8;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: #3c3c3c;
         }
 
-        .container, .logs, #tweet-info, #system-info, #logs {
+        .container,
+        .logs,
+        #tweet-info,
+        #system-info,
+        #logs {
             background-color: #fff;
             border: 1px solid #ccc;
             padding: 20px;
@@ -32,8 +38,10 @@
             justify-content: space-between;
         }
 
-        .log-content {
-            flex: 1 1 100%; /* default to full width */
+        .log-content,
+        .info-content {
+            flex: 1 1 100%;
+            /* default to full width for mobile */
         }
 
         .logs {
@@ -47,7 +55,9 @@
             overflow-y: auto;
         }
 
-        .info-item, .progress-bar, .link-item {
+        .info-item,
+        .progress-bar,
+        .link-item {
             margin-bottom: 10px;
         }
 
@@ -74,33 +84,144 @@
             text-decoration: underline;
         }
 
-        @media (min-width: 768px) { /* Adjust this value based on your design needs */
-            .log-content {
-                flex: 1 1 48%; /* adjust width for two columns, with some margin */
+        @media (min-width: 768px) {
+
+            /* Tablets and desktops */
+            .log-content,
+            .info-content {
+                flex: 1 1 48%;
+                /* Adjust width for two columns, with some margin */
                 margin-right: 10px;
             }
-            .log-content:last-child {
+
+            .log-content:last-child,
+            .info-content:last-child {
                 margin-right: 0;
+                /* Removes margin from the last column to avoid extra spacing */
+            }
+
+            .triple-content {
+                flex: 1 1 31%;
+                /* Adjust for three columns */
+                margin-right: 10px;
+            }
+
+            .triple-content:last-child {
+                margin-right: 0;
+                /* Removes margin from the last column */
             }
         }
     </style>
+    <script>
+
+        const socket = io();
+
+        function bytesToSize(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes === 0) return '0 Byte';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        }
+
+        function updateProgress(elementId, used, total) {
+            const percent = Math.round((used / total) * 100);
+            const bar = document.getElementById(elementId);
+            bar.style.width = percent + '%';
+            if (percent > 85) {
+                bar.className = 'bar-fill high-usage';
+            } else {
+                bar.className = 'bar-fill';
+            }
+        }
+
+        socket.on('log-update', function (msg) {
+            const logElement = document.getElementById('logs');
+            logElement.textContent = msg;
+        });
+
+        socket.on('index-log-update', function (msg) {
+            const indexLogElement = document.getElementById('index-logs');
+            indexLogElement.textContent = msg;
+        });
+
+        socket.on('index-error-update', function (msg) {
+            const indexErrorElement = document.getElementById('index-error');
+            indexErrorElement.textContent = msg;
+        });
+
+        socket.on('tweet-info-update', function (msg) {
+            const indexLogElement = document.getElementById('tweet-info');
+            indexLogElement.innerHTML = linkify(msg);
+        });
+
+        function linkify(inputText) {
+            var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+            return inputText.replace(urlRegex, function (url) {
+                return '<a href="' + url + '" target="_blank">' + url + '</a>';
+            });
+        }
+
+
+        socket.on('system-info', function (info) {
+            const systemInfoElement = document.getElementById('system-info');
+            systemInfoElement.innerHTML = `<div class="progress-bar"><div class="bar"><div id="mem-bar" class="bar-fill" style="width: ${Math.round((info.totalmem - info.freemem) / info.totalmem * 100)}%"></div></div>Memory Usage</div>` +
+                `<div class="progress-bar"><div class="bar"><div id="disk-bar" class="bar-fill" style="width: ${Math.round((info.totalSpace - info.freeSpace) / info.totalSpace * 100)}%"></div></div>Disk Usage</div><br/><br/>` +
+                `<div class="info-item">Free Memory: ${bytesToSize(info.freemem)}</div>` +
+                `<div class="info-item">Total Memory: ${bytesToSize(info.totalmem)}</div>` +
+                `<div class="info-item">Disk Free Space: ${bytesToSize(info.freeSpace)}</div>` +
+                `<div class="info-item">Disk Total Space: ${bytesToSize(info.totalSpace)}</div>` +
+                `<div class="info-item">CPU Cores: ${info.cpus}`;
+            updateProgress('mem-bar', info.totalmem - info.freemem, info.totalmem);
+            updateProgress('disk-bar', info.totalSpace - info.freeSpace, info.totalSpace);
+        });
+
+        socket.on('system-error', function (
+
+            message) {
+            alert(message);
+        });
+
+    </script>
 </head>
+
 <body>
     <h1>Translatemom Bot</h1>
-    <h2>Are we rate limited?</h2>
-    <div id="rate-limit">coming soon
-        todo:
-        when did we start getting rate limited
-        when will it get lifted
+    <div class="container">
+        <div class="triple-content">
+            <h2>Are we rate limited?</h2>
+            <div id="rate-limit">coming soon
+                todo:
+                when did we start getting rate limited
+                when will it get lifted
+            </div>
+        </div>
+        <div class="triple-content">
+            <h2>Useful Links</h2>
+            <div id="links">
+                <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
+                <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
+                    target="_blank">RabbitMQ Queue</a>
+                <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter
+                    Replies</a>
+            </div>
+        </div>
+        <div class="triple-content">
+            <h2>Last Published Tweet</h2>
+            <div id="tweet-info"></div>
+        </div>
     </div>
-    <h2>Useful Links</h2>
-    <div id="links">
-        <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
-        <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item" target="_blank">RabbitMQ Queue</a>
-        <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
+    <div class="container">
+        <div class="info-content">
+            <h2>System Info</h2>
+            <div id="system-info"></div>
+        </div>
+        <div class="info-content">
+            <h2>System Logs</h2>
+            <div id="logs"></div>
+        </div>
     </div>
-    <h2>Last Published Tweet</h2>
-    <div id="tweet-info"></div>
+
+
     <div class="container">
         <div class="log-content">
             <h2>Index Logs</h2>
@@ -111,9 +232,6 @@
             <div id="index-error" class="logs"></div>
         </div>
     </div>
-    <h2>System Info</h2>
-    <div id="system-info"></div>
-    <h2>System Logs</h2>
-    <div id="logs"></div>
 </body>
+
 </html>
