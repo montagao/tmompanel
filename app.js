@@ -39,12 +39,13 @@ io.on('connection', (socket) => {
                 socket.emit('log-error', 'Failed to read index-out log file');
             } else {
                 console.log('Reading index-out log file');
-                const jsonPattern = /data: ({[\s\S]*?})/;
+                const jsonPattern = /data:[\s\S]*?({[\s\S]*?})/;
 
                 const match = data.match(jsonPattern);
                 if (match) {
                     try {
                         const jsonData = JSON.parse(match[1]);
+                        console.log("jsonData", jsonData);
                         const elapsedTime = Date.now() - parseInt(jsonData.data.id);
                         socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
                         console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet`);
