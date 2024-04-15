@@ -1,0 +1,37 @@
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Viewer</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  const socket = io();
+  socket.on('log-update', function(msg) {
+    const logElement = document.getElementById('logs');
+    const messageElement = document.createElement('div');
+    messageElement.textContent = msg;
+    logElement.appendChild(messageElement);
+  });
+
+  socket.on('system-info', function(info) {
+    const systemInfoElement = document.getElementById('system-info');
+    systemInfoElement.innerHTML = `Free Memory: ${info.freemem} bytes<br>` +
+                                  `Total Memory: ${info.totalmem} bytes<br>` +
+                                  `Disk Free Space: ${info.freeSpace} bytes<br>` +
+                                  `Disk Total Space: ${info.totalSpace} bytes<br>` +
+                                  `CPU Cores: ${info.cpus}`;
+  });
+
+  </script>
+</head>
+<body>
+  <h1>TransalteMom Bot</h1>
+  <h2> system info </h2>
+  <div id="system-info"></div>
+
+  <h2> system logs </h2>
+  <div id="logs"></div>
+</body>
+</html>
+

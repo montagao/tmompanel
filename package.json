@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "diskusage": "^1.2.0",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "tail": "^2.2.6"
+  }
+}
