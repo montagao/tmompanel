@@ -45,7 +45,12 @@ io.on('connection', (socket) => {
                 if (match) {
                     try {
                         console.log(match[1]);
-                        const jsonData = JSON.parse(match[1]);
+                        const jsonData = JSON.parse(match[1].replace(/(\w+)(?=:)/g, '"$1"')  // Quote keys
+                            .replace(/:\s*'([^']*)'/g, ': "$1"')  // Replace single-quoted values with double-quoted
+                            .replace(/:\s*"([^"]*)"/g, (match, p1) => {
+                                return ': "' + p1.replace(/"/g, '\\"') + '"';  // Escape double quotes inside string values
+                            })
+                        );
                         console.log("jsonData", jsonData);
                         const elapsedTime = Date.now() - parseInt(jsonData.data.id);
                         socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
