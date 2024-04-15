@@ -98,12 +98,7 @@ io.on('connection', (socket) => {
 
     // Initial send
     sendLogs();
-
-    // Refresh log every 2 seconds
-    const logInterval = setInterval(sendLogs, 2000);
-
-    // Send system info every 10 seconds
-    const systemInfoInterval = setInterval(async () => {
+    const sendSystemInfo = async () => {
         try {
             const diskInfo = await diskusage.check(path.parse(os.platform() === 'win32' ? 'c:' : '/').root);
             const systemInfo = {
@@ -119,7 +114,15 @@ io.on('connection', (socket) => {
             console.error('Failed to get disk usage:', err);
             socket.emit('system-error', 'Failed to get system info');
         }
-    }, 10000);
+    }
+
+    sendSystemInfo();
+
+    // Refresh log every 2 seconds
+    const logInterval = setInterval(sendLogs, 2000);
+
+    // Send system info every 10 seconds
+    const systemInfoInterval = setInterval(sendSystemInfo, 10000);
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
