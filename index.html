@@ -24,7 +24,7 @@
         #logs,
         #links,
         #index-logs,
-        #tweet-info {
+        #tweet-info, .logs {
             display: flex;
             flex-direction: column;
             background-color: #fff;
@@ -36,7 +36,7 @@
         }
 
         #logs,
-        #index-logs {
+        #index-logs, .logs {
             white-space: pre-wrap;
             height: 300px;
             overflow-y: auto;
@@ -108,6 +108,11 @@
             indexLogElement.textContent = msg;
         });
 
+        socket.on('index-error-update', function (msg) {
+            const indexErrorElement = document.getElementById('index-error');
+            indexErrorElement.textContent = msg;
+        });
+
         socket.on('tweet-info-update', function (msg) {
             const indexLogElement = document.getElementById('tweet-info');
             indexLogElement.innerHTML = linkify(msg);
@@ -160,7 +165,10 @@
     <h2>Last Published Tweet</h2>
     <div id="tweet-info"></div>
     <h2>Index Logs</h2>
-    <div id="index-logs"></div>
+    <div id="index">
+        <div id="index-logs"></div>
+        <div id="index-error"></div>
+    </div>
     <h2>System Info</h2>
     <div id="system-info"></div>
     <h2>System Logs</h2>

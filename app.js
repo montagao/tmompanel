@@ -12,6 +12,7 @@ const io = socketIo(server);
 
 const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
 const indexOutLogPath = "/root/.pm2/logs/index-out.log";
+const indexErrorLogPath = "/root/.pm2/logs/index-error.log";
 
 function snowflake2millis(snowflakeId) {
     /**
@@ -42,6 +43,18 @@ io.on('connection', (socket) => {
                 console.log('Translatemom logs sent to client');
             }
         });
+        fs.readFile(indexErrorLogPath, 'utf8', (err, data) => {
+            if (err) {
+                console.error(`Error reading index error log file: ${err}`);
+                socket.emit('index-error-error', 'Failed to read translatemom log file');
+            } else {
+                const lines = data.split('\n').slice(-50); // Get the last 50 lines
+                socket.emit('index-error', lines.join('\n'));
+                console.log('index (worker) error logs sent to client');
+            }
+        });
+
+
 
         fs.readFile(indexOutLogPath, 'utf8', (err, data) => {
             if (err) {
