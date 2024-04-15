@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
                 const match = data.match(jsonPattern);
                 if (match) {
                     try {
+                        console.log(match[1]);
                         const jsonData = JSON.parse(match[1]);
                         console.log("jsonData", jsonData);
                         const elapsedTime = Date.now() - parseInt(jsonData.data.id);
