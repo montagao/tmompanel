@@ -58,8 +58,19 @@ io.on('connection', (socket) => {
                     const id = match[1];  // Extract the ID directly from the regex match
                     const tweetTime = snowflake2millis(parseInt(id));
                     const elapsedTime = Date.now() - tweetTime;
-                    socket.emit('tweet-info-update', `Elapsed Time: ${Math.floor(elapsedTime / 1000)} seconds`);
-                    console.log(`Tweet info update sent: ${elapsedTime / 1000} seconds since tweet with ID: ${id}`);
+                    // Assume 'elapsedTime' is in milliseconds
+                    let totalSeconds = Math.floor(elapsedTime / 1000);
+                    let hours = Math.floor(totalSeconds / 3600);
+                    let minutes = Math.floor((totalSeconds % 3600) / 60);
+                    let seconds = totalSeconds % 60;
+
+                    // Create a formatted string for the elapsed time
+                    let formattedTime = `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+
+                    // Emit and log the formatted time
+                    socket.emit('tweet-info-update', `Elapsed Time: ${formattedTime}`);
+                    console.log(`Tweet info update sent: ${formattedTime} since tweet with ID: ${id}`);
+
                 } else {
                     console.log('No valid JSON match found or ID is missing');
                 }
