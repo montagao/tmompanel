@@ -58,7 +58,6 @@ io.on('connection', (socket) => {
 
                 if (match) {
                     const id = match[match.length - 1];  // Extract the ID directly from the regex match
-                    console.log(match)
                     const tweetTime = snowflake2millis(parseInt(id));
                     const elapsedTime = Date.now() - tweetTime;
                     // Assume 'elapsedTime' is in milliseconds
