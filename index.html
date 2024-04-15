@@ -130,6 +130,10 @@
     <script>
 
         const socket = io();
+        document.getElementById('restartButton').addEventListener('click', function () {
+            socket.emit('dry-run-restart', 'Dry run: Restart command would be executed here.');
+        });
+
 
         function bytesToSize(bytes) {
             const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -216,7 +220,8 @@
                 <a href="https://bot.translate.mom:3001/admin/queues" class="link-item" target="_blank">Bull Queue</a>
                 <a href="http://bot.translate.mom:15672/#/queues/%2F/twitterVideoTranslation" class="link-item"
                     target="_blank">RabbitMQ Queue</a>
-                <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter Replies</a>
+                <a href="https://twitter.com/TranslateMom/with_replies" class="link-item" target="_blank">Twitter
+                    Replies</a>
             </div>
         </div>
         <div class="triple-content">
@@ -226,7 +231,11 @@
         <div class="triple-content">
             <h2>System Info</h2>
             <div id="system-info" class="logs"></div>
+            <h2>System Actions</h2>
+            <button id="restartButton">Dry Run Restart Server</button>
         </div>
+
+    </div>
     </div>
 
 
@@ -247,7 +256,5 @@
     </div>
 
 </body>
-
-</html>
 
 </html>

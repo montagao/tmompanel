@@ -10,6 +10,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const pm2 = require('pm2');
+
 const translatemomLogPath = "/root/transcribemom/logs/translatemom.log";
 const indexOutLogPath = "/root/.pm2/logs/index-out.log";
 const indexErrorLogPath = "/root/.pm2/logs/index-error.log";
@@ -31,6 +33,34 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
+
+    socket.on('dry-run-restart', function(message) {
+        console.log(message); // Log the message indicating what would have been done
+    });
+
+    console.log('A user connected');
+
+    socket.on('restart-server', function() {
+        console.log('Restart request received');
+        pm2.connect(function(err) {
+            if (err) {
+                console.error(err);
+                socket.emit('action-status', 'Error connecting to PM2');
+                return;
+            }
+            pm2.restart('my-app', function(err, apps) {
+                pm2.disconnect();   // Disconnects from PM2
+                if (err) {
+                    console.error(err);
+                    socket.emit('action-status', 'Error restarting the server');
+                    return;
+                }
+                console.log('Server restarted successfully');
+                socket.emit('action-status', 'Server restarted successfully');
+            });
+        });
+    });
+
 
     const sendLogs = () => {
         fs.readFile(translatemomLogPath, 'utf8', (err, data) => {
