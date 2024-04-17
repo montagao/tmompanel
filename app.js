@@ -1,4 +1,5 @@
 const express = require('express');
+const { exec } = require('child_process');
 const http = require('http');
 const socketIo = require('socket.io');
 const fs = require('fs');
@@ -42,31 +43,14 @@ io.on('connection', (socket) => {
 
     socket.on('restart-server', function() {
         console.log('Restart request received');
-        pm2.connect(function(err) {
-            if (err) {
-                console.error(err);
-                socket.emit('action-status', 'Error connecting to PM2');
+        exec('shutdown -r now', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Restart error: ${error}`);
+                socket.emit('action-status', 'Error in system restart');
                 return;
             }
-            pm2.restart('index', function(err, apps) {
-                if (err) {
-                    console.error(err);
-                    socket.emit('action-status', 'Error restarting the server');
-                    return;
-                }
-                console.log('Server (index worker) restarted successfully');
-                socket.emit('action-status', 'Server restarted successfully');
-            });
-            pm2.restart('my-app', function(err, apps) {
-                if (err) {
-                    console.error(err);
-                    socket.emit('action-status', 'Error restarting the server');
-                    return;
-                }
-                console.log('Server (backend tmom) restarted successfully');
-                socket.emit('action-status', 'Server restarted successfully');
-            });
-
+            socket.emit('action-status', 'System is restarting...');
+            console.log('System restart initiated');
         });
     });
 

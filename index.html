@@ -157,7 +157,8 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('restartButton').addEventListener('click', function () {
-                socket.emit('restart-server', 'Dry run: Restart command would be executed here.');
+                socket.emit('restart-server', 'server will get restarted');
+                alert('Server restart signal sent');
             });
         });
 
